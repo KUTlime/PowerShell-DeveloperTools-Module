@@ -3,7 +3,7 @@
 
 try
 {
-    $configuration = Get-Content -Path $configurationFilePath.FullName -Encoding:utf8BOM | ConvertFrom-Json
+    $configuration = [System.IO.File]::ReadAllText($configurationFilePath.FullName) | ConvertFrom-Json
 }
 catch
 {
@@ -58,7 +58,7 @@ function Set-DevToolsConfiguration
         Write-Warning "The configuration file already exist in the path $configurationFilePath"
         Rename-Item -Path $configurationFilePath.FullName -NewName ($configurationFilePath.FullName + '_old') -Force
     }
-    $configuration | Out-File -FilePath $configurationFilePath -Encoding:utf8BOM -Force
+    $configuration | Out-File -FilePath $configurationFilePath -Encoding:unicode -Force
 }
 
 function Set-RepoLocation
