@@ -6,7 +6,7 @@
     CompanyName       = 'Radek Zahradník'
     Copyright         = '(c) 2021 Radek Zahradník. All rights reserved.'
     Description       = 'A collection of tools used to make a daily life of C# .Net developer easier.'
-    FunctionsToExport = '*'
+    FunctionsToExport = @('Open-DevToolsConfiguration','Set-DevToolsConfiguration', 'Set-RepoLocation', 'Clear-BuildWorkspace', 'Clear-Repo')
     AliasesToExport   = '*'
     FileList          = @('configuration.json')
     PrivateData       = @{
