@@ -1,6 +1,6 @@
 ﻿@{
-    RootModule        = 'DevelopersTools'
-    ModuleVersion     = '1.0.1'
+    RootModule        = 'DeveloperTools'
+    ModuleVersion     = '1.0.0'
     GUID              = 'd3bb84fb-6594-44f5-b2e0-ad08fde65b93'
     Author            = 'Radek Zahradník'
     CompanyName       = 'Radek Zahradník'
@@ -15,9 +15,6 @@
 v1.0.0: (2020-05-13)
 - Clear-Repo & Clear-BuildWorkspace
 - Set-Repo
-
-v1.0.1: (2020-05-13)
-- Fix encoding handling compatibility issue
 '@
 
         }
