@@ -1,5 +1,5 @@
 ﻿@{
-    RootModule        = 'DevTools'
+    RootModule        = 'DevelopersTools'
     ModuleVersion     = '1.0.0'
     GUID              = 'd3bb84fb-6594-44f5-b2e0-ad08fde65b93'
     Author            = 'Radek Zahradník'
