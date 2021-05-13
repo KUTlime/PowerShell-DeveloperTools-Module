@@ -13,4 +13,4 @@ if ($psGetModule.Version -lt $minimalPSGetVersion)
     Install-Module -Name $psGet -MinimumVersion '2.2.3'
 }
 
-Publish-Module -Name "$PSScriptRoot\DevTools\" -NuGetApiKey $nugetApiKey
+Publish-Module -Name "$PSScriptRoot\DevelopersTools\" -NuGetApiKey $nugetApiKey
