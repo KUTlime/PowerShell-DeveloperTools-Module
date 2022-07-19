@@ -3,11 +3,12 @@
 
 try
 {
-    $configuration = [System.IO.File]::ReadAllText($configurationFilePath.FullName) | ConvertFrom-Json
+    $configurationValue = [System.IO.File]::ReadAllText($configurationFilePath.FullName) | ConvertFrom-Json
+    New-Variable -Name 'configuration' -Value $configurationValue -Scope 'Script'
 }
 catch
 {
-    Write-Error "The configuration file has not been found. Execute Set-DevToolsConfiguration -Default"
+    Write-Error 'The configuration file has not been found. Execute Set-DevToolsConfiguration -Default'
 }
 
 $HereString =
@@ -35,10 +36,10 @@ function Set-DevToolsConfiguration
     [Alias('dtconfig')]
     [OutputType([void])]
     param(
-        [Parameter(Mandatory,ParameterSetName='DefaultConfig')]
+        [Parameter(Mandatory, ParameterSetName = 'DefaultConfig')]
         [Switch]
         $Default,
-        [Parameter(Mandatory,ParameterSetName='StringConfig')]
+        [Parameter(Mandatory, ParameterSetName = 'StringConfig')]
         [string]
         $Configuration
     )
@@ -47,7 +48,7 @@ function Set-DevToolsConfiguration
     {
         $setup = @{
             RepoFolders = @{
-                Path = Join-Path -Path $env:USERPROFILE -ChildPath 'source'
+                Path          = Join-Path -Path $env:USERPROFILE -ChildPath 'source'
                 EnumValueName = 'Default'
             }
         }
@@ -70,7 +71,9 @@ function Set-RepoLocation
         [Repo]
         $Repository = 'Default'
     )
-    $path = $configuration.RepoFolders | Where-Object {$_.EnumValueName -eq $Repository} | Select-Object -ExpandProperty 'Path'
+    $path = $configuration.RepoFolders.GetEnumerator() |
+    Where-Object { $_.EnumValueName -eq $Repository } |
+    Select-Object -ExpandProperty 'Path'
     Set-Location -Path $path
 }
 
@@ -86,7 +89,7 @@ function Clear-BuildWorkspace
     process
     {
         Write-Host "Cleaning up build workspace by removing bin, obj and package directory in $($Path.Path)"
-        Get-ChildItem -Path "$($Path.Path)" -Include 'bin','obj','packages' -Directory -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction:Stop
+        Get-ChildItem -Path "$($Path.Path)" -Include 'bin', 'obj', 'packages' -Directory -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction:Stop
         Write-Host 'Clean up was successful' -ForegroundColor Green
     }
 }
@@ -102,10 +105,37 @@ function Clear-Repo
     )
     process
     {
-        $configuration.RepoFolders |
-        Where-Object {$_.EnumValueName -eq $Repository} |
+        $configuration.RepoFolders.GetEnumerator() |
+        Where-Object { $_.EnumValueName -eq $Repository } |
         Select-Object -ExpandProperty 'Path' |
         Clear-BuildWorkspace
+    }
+}
+
+function Clear-LocalBranch
+{
+    [Alias('clearbranch')]
+    [Alias('clb')]
+    [OutputType([void])]
+    param (
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'Repo')]
+        [Repo]
+        $Repository = 'Default',
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'Path')]
+        [System.Management.Automation.PathInfo]
+        $Path = $PWD
+    )
+    process
+    {
+        $originPwd = $PWD
+        $targetPath = $configuration.RepoFolders.GetEnumerator() |
+        Where-Object { $_.EnumValueName -eq $Repository } |
+        Select-Object -ExpandProperty 'Path'
+        $targetPath ??= $Path
+        Set-Location $targetPath
+        git fetch
+        git branch -vv | Select-String -Pattern ': gone]' | ForEach-Object { ($_ -split '\s+')[1] } | ForEach-Object { git branch -D $_ }
+        Set-Location -Path $originPwd
     }
 }
 
