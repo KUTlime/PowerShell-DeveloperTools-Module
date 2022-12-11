@@ -1,17 +1,20 @@
 ﻿@{
     RootModule        = 'DeveloperTools'
-    ModuleVersion     = '1.1.0'
+    ModuleVersion     = '1.2.0'
     GUID              = 'd3bb84fb-6594-44f5-b2e0-ad08fde65b93'
     Author            = 'Radek Zahradník'
     CompanyName       = 'Radek Zahradník'
     Copyright         = '(c) 2021 Radek Zahradník. All rights reserved.'
     Description       = 'A collection of tools used to make a daily life of C# .Net developer easier.'
-    FunctionsToExport = @('Open-DevToolsConfiguration','Set-DevToolsConfiguration', 'Set-RepoLocation', 'Clear-BuildWorkspace', 'Clear-Repo', 'Clear-LocalBranch')
+    FunctionsToExport = @('Open-DevToolsConfiguration','Set-DevToolsConfiguration', 'Set-RepoLocation', 'Clear-BuildWorkspace', 'Clear-Repo', 'Clear-LocalBranch', 'Restart-AzureCosmosDbEmulator')
     AliasesToExport   = '*'
     FileList          = @('configuration.json')
     PrivateData       = @{
         PSData = @{
             ReleaseNotes = @'
+v1.2.0: (2022-12-12)
+- Added Restart-AzureCosmosDbEmulator
+
 v1.1.0: (2022-07-07)
 - Added Clear-LocalBranch
 - Changed Set-RepoLocation

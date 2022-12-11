@@ -139,3 +139,11 @@ function Clear-LocalBranch
     }
 }
 
+function Restart-AzureCosmosDbEmulator
+{
+    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object {$_.Close()}
+    Start-Sleep -Seconds 2
+    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object {$_.Kill()}
+    Start-Process -FilePath "C:\Program Files\Azure Cosmos DB Emulator\Microsoft.Azure.Cosmos.Emulator.exe" -ErrorAction:SilentlyContinue
+}
+
