@@ -1,0 +1,30 @@
+name: Publish PowerShell Module
+
+on: [pull_request]
+
+jobs:
+  install-pwsh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Install PowerShell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https software-properties-common
+          wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y powershell
+          
+      - name: Verify PowerShell installation
+        run: pwsh -c 'Get-Host'
+
+      - name: Publish PowerShell Module
+        uses: natescherer/publish-powershell-action@v1
+        with:
+          token: ${{ secrets.PS_GALLERY_KEY }}
+          target: gallery
+          path: DeveloperTools

@@ -141,9 +141,46 @@ function Clear-LocalBranch
 
 function Restart-AzureCosmosDbEmulator
 {
-    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object {$_.Close()}
+    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object { $_.Close() }
     Start-Sleep -Seconds 2
-    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object {$_.Kill()}
-    Start-Process -FilePath "C:\Program Files\Azure Cosmos DB Emulator\Microsoft.Azure.Cosmos.Emulator.exe" -ErrorAction:SilentlyContinue
+    Get-Process -Name 'Microsoft.Azure.Cosmos.*' | ForEach-Object { $_.Kill() }
+    Start-Process -FilePath 'C:\Program Files\Azure Cosmos DB Emulator\Microsoft.Azure.Cosmos.Emulator.exe' -ErrorAction:SilentlyContinue
 }
 
+function Measure-Repo
+{
+    param (
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'Repo')]
+        [Repo]
+        $Repository = 'Default',
+        [Parameter(ValueFromPipeline, ValueFromPipelineByPropertyName, ParameterSetName = 'Path')]
+        [System.Management.Automation.PathInfo]
+        $Path = $PWD
+    )
+    process
+    {
+        $directory = $configuration.RepoFolders.GetEnumerator() |
+        Where-Object { $_.EnumValueName -eq $Repository } |
+        Select-Object -ExpandProperty 'Path'
+        $directory ??= $Path
+
+        $fileCount = 0
+        $totalLineCount = 0
+
+        # Get all directories in the directory and its subdirectories
+        Get-ChildItem -Path $directory -Recurse -Directory
+        | Where-Object { $_.Name -ne 'obj' -or $_.Name -ne 'bin' }
+        | ForEach-Object {
+            Get-ChildItem -Path $_.FullName -Include '*.cs', '*.csproj' -Recurse -File
+        }
+        | Select-Object -Unique
+        | ForEach-Object {
+            $fileCount++
+            $totalLineCount += ((Get-Content -Path $_.FullName) | Measure-Object -Line).Lines
+        }
+
+        # Output the results
+        Write-Output "Number of *.cs, *.csproj files: $fileCount"
+        Write-Output "Total number of lines: $totalLineCount"
+    }
+}
