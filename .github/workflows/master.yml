@@ -23,8 +23,8 @@ jobs:
         run: pwsh -c 'Get-Host'
 
       - name: Publish PowerShell Module
-              uses: natescherer/publish-powershell-action@v1
-              with:
-                token: ${{ secrets.GALLERY_API_KEY }}
-                target: gallery
-                path: DeveloperTools
+        uses: natescherer/publish-powershell-action@v1
+        with:
+          token: ${{ secrets.GALLERY_API_KEY }}
+          target: gallery
+          path: DeveloperTools
