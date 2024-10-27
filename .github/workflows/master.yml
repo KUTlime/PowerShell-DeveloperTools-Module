@@ -1,18 +1,15 @@
-- name: Publish Module to PowerShell Gallery
-  name: Publish PowerShell Module
+on:
+  pull_request:
+    branches:
+      - master
 
-  on:
-    pull_request:
-      branches:
-        - master
-
-  jobs:
-    publish:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - name: Publish PowerShell Module
-          uses: pcgeek86/publish-powershell-module-action@v20
-          id: publish-module
-          with:
-            NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish PowerShell Module
+        uses: pcgeek86/publish-powershell-module-action@v20
+        id: publish-module
+        with:
+          NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
