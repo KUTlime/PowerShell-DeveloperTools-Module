@@ -1,6 +1,6 @@
 name: Publish PowerShell Module
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   install-pwsh:
@@ -25,6 +25,6 @@ jobs:
       - name: Publish PowerShell Module
         uses: natescherer/publish-powershell-action@v1
         with:
-          token: ${{ secrets.GALLERY_API_KEY }}
+          token: ${{ secrets.PS_GALLERY_KEY }}
           target: gallery
           path: DeveloperTools
